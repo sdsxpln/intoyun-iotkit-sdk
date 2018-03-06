@@ -16,8 +16,6 @@
  *
  */
 
-
-
 #include "iot_import.h"
 #include "utils_timer.h"
 

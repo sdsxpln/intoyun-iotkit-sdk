@@ -16,7 +16,6 @@
  *
  */
 
-
 #include "CoAPNetwork.h"
 #include "lite-utils.h"
 #ifndef __COAP_EXPORT_H__
@@ -207,14 +206,8 @@ typedef struct
     unsigned int             waittime;
 }CoAPContext;
 
-#define COAP_TRC     log_debug
-#define COAP_DUMP    log_debug
-#define COAP_DEBUG   log_debug
-#define COAP_INFO    log_info
-#define COAP_ERR     log_err
-
 CoAPContext *CoAPContext_create(CoAPInitParam *param);
 void CoAPContext_free(CoAPContext *p_ctx);
 
-
 #endif
+

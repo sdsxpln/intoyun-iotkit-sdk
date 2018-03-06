@@ -16,7 +16,6 @@
  *
  */
 
-
 #include <stdlib.h>
 
 const char iotx_coap_ca_crt_rsa[] =

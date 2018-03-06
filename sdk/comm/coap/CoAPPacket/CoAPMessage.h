@@ -16,7 +16,6 @@
  *
  */
 
-
 #include "CoAPExport.h"
 
 #ifndef __COAP_HANDLE_MSG_H__

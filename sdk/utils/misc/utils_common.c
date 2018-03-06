@@ -16,7 +16,6 @@
  *
  */
 
-
 #include "utils_common.h"
 
 static inline char ascii_nibble(uint8_t nibble)

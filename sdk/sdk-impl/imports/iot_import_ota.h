@@ -21,15 +21,8 @@
 
 #include "iot_import.h"
 #include "sdkconfig.h"
-#include "lite-log.h"
-#include "json_parser.h"
 #include "utils_md5.h"
 
-#define OTA_MALLOC          HAL_Malloc
-#define OTA_FREE            HAL_Free
-#define OTA_LOG_DEBUG       log_debug
-#define OTA_LOG_INFO        log_info
-#define OTA_LOG_ERROR       log_err
 #define OTA_ASSERT          LITE_ASSERT
 #define OTA_SNPRINTF        HAL_Snprintf
 

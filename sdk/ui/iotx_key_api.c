@@ -16,7 +16,6 @@
  *
  */
 
-
 #include "iotx_key_api.h"
 
 static iotx_key_param_t keyParams = {0,20,600,1000,1,0,false,0,0};

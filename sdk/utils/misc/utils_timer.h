@@ -16,9 +16,6 @@
  *
  */
 
-
-
-
 #ifndef _IOTX_COMMON_TIMER_H_
 #define _IOTX_COMMON_TIMER_H_
 

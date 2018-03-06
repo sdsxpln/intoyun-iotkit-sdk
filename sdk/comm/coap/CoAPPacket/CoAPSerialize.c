@@ -16,7 +16,6 @@
  *
  */
 
-
 #include <stdio.h>
 #include "CoAPSerialize.h"
 #include "CoAPExport.h"

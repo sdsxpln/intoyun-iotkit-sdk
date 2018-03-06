@@ -25,14 +25,13 @@ extern "C" {
 
 #include "iot_import.h"
 
-#include "sdk-impl_internal.h"
+#include "sdk_impl_internal.h"
 
 #include "exports/iot_export_cloud.h"
 #include "exports/iot_export_coap.h"
 #include "exports/iot_export_mqtt.h"
 #include "exports/iot_export_ota.h"
 #include "exports/iot_export_system.h"
-#include "exports/iot_export_log.h"
 #include "exports/iot_export_key.h"
 
 #if defined(__cplusplus)

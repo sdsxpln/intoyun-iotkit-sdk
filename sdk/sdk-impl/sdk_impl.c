@@ -79,14 +79,6 @@ const iot_system_if_t System =
     IOT_DataPoint_Control
 };
 
-const iot_log_if_t Log =
-{
-    IOT_OpenLog,
-    IOT_CloseLog,
-    IOT_SetLogLevel,
-    IOT_DumpMemoryStats,
-};
-
 const iot_keys_if_t Key =
 {
     IOT_KEY_Init,

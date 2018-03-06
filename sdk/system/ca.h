@@ -16,9 +16,6 @@
  *
  */
 
-
-
-
 #ifndef _IOTX_CA_H_
 #define _IOTX_CA_H_
 

@@ -16,7 +16,6 @@
  *
  */
 
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -40,14 +39,14 @@ unsigned int CoAPNetworkDTLS_read(void *p_session,
     const unsigned int     read_len  = *p_datalen;
     DTLSContext           *context   = NULL;
 
-    COAP_TRC("<< secure_datagram_read, read buffer len %d, timeout %d", read_len, timeout);
+    MOLMC_LOGD("coap", "<< secure_datagram_read, read buffer len %d, timeout %d", read_len, timeout);
     if (NULL != p_session) {
         /* read dtls application data*/
         context = (DTLSContext *)p_session;
         err_code = HAL_DTLSSession_read(context, p_data, p_datalen, timeout);
         if (DTLS_PEER_CLOSE_NOTIFY == err_code
             || DTLS_FATAL_ALERT_MESSAGE  == err_code) {
-            COAP_INFO("dtls session read failed return (0x%04x)", err_code);
+            MOLMC_LOGI("coap", "dtls session read failed return (0x%04x)", err_code);
             CoAPNetworkDTLS_freeSession(context);
         }
         if (DTLS_SUCCESS == err_code) {
@@ -112,7 +111,7 @@ unsigned int CoAPNetwork_write(coap_network_t *p_network,
     } else {
 #endif
         rc = HAL_UDP_write((void *)p_network->context, p_data, datalen);
-        COAP_DEBUG("[CoAP-NWK]: Network write return %d", rc);
+        MOLMC_LOGD("coap", "[CoAP-NWK]: Network write return %d", rc);
 
         if (-1 == rc) {
             rc = COAP_ERROR_WRITE_FAILED;
@@ -143,7 +142,7 @@ int CoAPNetwork_read(coap_network_t *network, unsigned char  *data,
 #ifdef COAP_DTLS_SUPPORT
     }
 #endif
-    COAP_TRC("<< CoAP recv %d bytes data", len);
+    MOLMC_LOGD("coap", "<< CoAP recv %d bytes data", len);
     return len;
 }
 

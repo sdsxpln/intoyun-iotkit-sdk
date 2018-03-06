@@ -18,7 +18,6 @@
 
 #include <string.h>
 
-#include "lite-log.h"
 #include "iotx_system_api.h"
 #include "iotx_comm_if_api.h"
 
@@ -28,14 +27,14 @@ static int                  iotx_devinfo_inited = 0;
 int IOT_SYSTEM_DeviceInit(void)
 {
     if (iotx_devinfo_inited) {
-        log_debug("device_info already created, return!");
+        MOLMC_LOGD("system", "device_info already created, return!");
         return 0;
     }
 
     memset(&iotx_device_info, 0x0, sizeof(iotx_device_info_t));
     iotx_devinfo_inited = 1;
 
-    log_info("device_info created successfully!");
+    MOLMC_LOGI("system", "device_info created successfully!");
     return SUCCESS_RETURN;
 }
 
@@ -43,7 +42,7 @@ int IOT_SYSTEM_SetDeviceInfo(char *deviceId, char *deviceSecret, char *productID
 {
     iotx_conn_info_pt pconn_info = iotx_conn_info_get();
 
-    log_debug("start to set device info!");
+    MOLMC_LOGD("system", "start to set device info!");
     memset(&iotx_device_info, 0x0, sizeof(iotx_device_info));
 
     iotx_device_info.comm_type = commType;
@@ -56,7 +55,7 @@ int IOT_SYSTEM_SetDeviceInfo(char *deviceId, char *deviceSecret, char *productID
 
     strncpy(pconn_info->password, iotx_device_info.device_secret, DEVICE_SECRET_LEN);
 
-    log_debug("device_info set successfully!");
+    MOLMC_LOGD("system", "device_info set successfully!");
     return SUCCESS_RETURN;
 }
 

@@ -17,8 +17,6 @@
  */
 
 #include "iot_import.h"
-#include "sdkconfig.h"
-#include "lite-log.h"
 #include "lite-utils.h"
 #include "utils_timer.h"
 #include "utils_cJSON.h"
@@ -53,10 +51,10 @@ static int iotx_get_device_info(char *buf, uint16_t buflen)
     cJSON_AddItemToObject(root, "online", cJSON_CreateBool(true));
     json_out = cJSON_Print(root);
     json_len = strlen(json_out);
-    log_debug("info = %s", json_out);
+    MOLMC_LOGD("comm-if", "info = %s", json_out);
 
     if(json_len > buflen) {
-        log_err("memory len to short");
+        MOLMC_LOGE("comm-if", "memory len to short");
     }
     memset(buf, 0, buflen);
     memcpy(buf, json_out, json_len);
@@ -126,7 +124,7 @@ int IOT_Comm_Init(void)
     IOT_DataPoint_DefineBool(DPID_DEFAULT_BOOL_RESET, DP_PERMISSION_UP_DOWN, false);               //reboot
     IOT_DataPoint_DefineBool(DPID_DEFAULT_BOOL_GETALLDATAPOINT, DP_PERMISSION_UP_DOWN, false);     //get all datapoint
 
-    log_info("conn_info created successfully!");
+    MOLMC_LOGI("comm-if", "conn_info created successfully!");
     return 0;
 }
 
@@ -169,7 +167,7 @@ int IOT_Comm_Disconnect(void)
 
 int IOT_Comm_SendData(const uint8_t *data, uint16_t datalen)
 {
-    log_debug("IOT_Comm_SendData");
+    MOLMC_LOGD("comm-if", "IOT_Comm_SendData");
     if(IOTX_CONN_STATE_CONNECTED != iotx_get_conn_state()) {
         return -1;
     }
@@ -193,7 +191,7 @@ static int iotx_conn_handle_reconnect(void)
         return FAIL_RETURN;
     }
 
-    log_info("start reconnect");
+    MOLMC_LOGI("comm-if", "start reconnect");
 
     rc = iotx_comm_connect();
     if (SUCCESS_RETURN == rc) {
@@ -216,7 +214,7 @@ static int iotx_conn_handle_reconnect(void)
     }
     utils_time_countdown_ms(&(pconn_info->reconnect_param.reconnect_next_time), interval_ms);
 
-    log_err("reconnect failed rc = %d", rc);
+    MOLMC_LOGE("comm-if", "reconnect failed rc = %d", rc);
     return rc;
 }
 
@@ -238,9 +236,9 @@ int IOT_Comm_Yield(void)
         if (IOTX_CONN_STATE_DISCONNECTED_RECONNECTING == connState) {
             rc = iotx_conn_handle_reconnect();
             if (SUCCESS_RETURN != rc) {
-                //log_debug("reconnect network fail, rc = %d", rc);
+                //MOLMC_LOGD("comm-if", "reconnect network fail, rc = %d", rc);
             } else {
-                log_info("network is reconnected!");
+                MOLMC_LOGI("comm-if", "network is reconnected!");
                 //iotx_mc_reconnect_callback();
                 pconn_info->reconnect_param.reconnect_time_interval_ms = IOTX_MC_RECONNECT_INTERVAL_MIN_MS;
             }
@@ -250,7 +248,7 @@ int IOT_Comm_Yield(void)
 
         /* If network suddenly interrupted, stop pinging packet, try to reconnect network immediately */
         if (IOTX_CONN_STATE_DISCONNECTED == connState) {
-            log_err("network is disconnected!");
+            MOLMC_LOGE("comm-if", "network is disconnected!");
             //iotx_mc_disconnect_callback(pClient);
 
             pconn_info->reconnect_param.reconnect_time_interval_ms = IOTX_CONN_RECONNECT_INTERVAL_MIN_MS;

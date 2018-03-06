@@ -26,13 +26,12 @@ extern "C" {
 #include "iot_import.h"
 #include "iot_export.h"
 
-#include "lite-log.h"
 #include "lite-utils.h"
 
 #define POINTER_SANITY_CHECK(ptr, err) \
     do { \
         if (NULL == (ptr)) { \
-            log_err("Invalid argument, %s = %p", #ptr, ptr); \
+            MOLMC_LOGE("sdk", "Invalid argument, %s = %p", #ptr, ptr); \
             return (err); \
         } \
     } while(0)
@@ -40,11 +39,11 @@ extern "C" {
 #define STRING_PTR_SANITY_CHECK(ptr, err) \
     do { \
         if (NULL == (ptr)) { \
-            log_err("Invalid argument, %s = %p", #ptr, (ptr)); \
+            MOLMC_LOGE("sdk", "Invalid argument, %s = %p", #ptr, (ptr)); \
             return (err); \
         } \
         if (0 == strlen((ptr))) { \
-            log_err("Invalid argument, %s = '%s'", #ptr, (ptr)); \
+            MOLMC_LOGE("sdk", "Invalid argument, %s = '%s'", #ptr, (ptr)); \
             return (err); \
         } \
     } while(0)

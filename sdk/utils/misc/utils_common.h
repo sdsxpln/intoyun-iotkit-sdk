@@ -16,7 +16,6 @@
  *
  */
 
-
 #ifndef __UTILS_COMMON_H__
 #define __UTILS_COMMON_H__
 

@@ -16,7 +16,6 @@
  *
  */
 
-
 #ifndef __IOTX_TIMER_API_H__
 #define __IOTX_TIMER_API_H__
 

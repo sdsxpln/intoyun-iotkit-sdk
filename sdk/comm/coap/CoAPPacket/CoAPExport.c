@@ -16,7 +16,6 @@
  *
  */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -63,7 +62,7 @@ unsigned int CoAPUri_parse(char *p_uri, coap_endpoint_type *p_endpoint_type,
         *p_endpoint_type = COAP_ENDPOINT_NOSEC;
         *port     = COAP_DEFAULT_PORT;
     }
-    COAP_DEBUG("The endpoint type is: %d", *p_endpoint_type);
+    MOLMC_LOGD("coap", "The endpoint type is: %d", *p_endpoint_type);
 
     q = (char *)"://";
     while (len && *q && tolower(*p) == *q) {
@@ -91,7 +90,7 @@ unsigned int CoAPUri_parse(char *p_uri, coap_endpoint_type *p_endpoint_type,
         memset(host, 0x00, COAP_DEFAULT_HOST_LEN);
         strncpy(host, p, q - p);
     }
-    COAP_DEBUG("The host name is: %s", host);
+    MOLMC_LOGD("coap", "The host name is: %s", host);
     if (len && *q == ':') {
         p = ++q;
         --len;
@@ -114,7 +113,7 @@ unsigned int CoAPUri_parse(char *p_uri, coap_endpoint_type *p_endpoint_type,
             *port = uri_port;
         }
     }
-    COAP_DEBUG("The port is: %d", *port);
+    MOLMC_LOGD("coap", "The port is: %d", *port);
 
     return COAP_SUCCESS;
 }
@@ -130,7 +129,7 @@ CoAPContext *CoAPContext_create(CoAPInitParam *param)
     memset(&network_param, 0x00, sizeof(coap_network_init_t));
     p_ctx = coap_malloc(sizeof(CoAPContext));
     if (NULL == p_ctx) {
-        COAP_ERR("malloc for coap context failed");
+        MOLMC_LOGE("coap", "malloc for coap context failed");
         goto err;
     }
 
@@ -139,13 +138,13 @@ CoAPContext *CoAPContext_create(CoAPInitParam *param)
     p_ctx->notifier = param->notifier;
     p_ctx->sendbuf = coap_malloc(COAP_MSG_MAX_PDU_LEN);
     if (NULL == p_ctx->sendbuf) {
-        COAP_ERR("not enough memory");
+        MOLMC_LOGE("coap", "not enough memory");
         goto err;
     }
 
     p_ctx->recvbuf = coap_malloc(COAP_MSG_MAX_PDU_LEN);
     if (NULL == p_ctx->recvbuf) {
-        COAP_ERR("not enough memory");
+        MOLMC_LOGE("coap", "not enough memory");
         goto err;
     }
 

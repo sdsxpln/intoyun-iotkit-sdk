@@ -16,7 +16,6 @@
  *
  */
 
-
 #include <stdint.h>
 #include "iot_import_dtls.h"
 

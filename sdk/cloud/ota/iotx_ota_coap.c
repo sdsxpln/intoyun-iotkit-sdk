@@ -47,8 +47,8 @@ static void otacoap_response_handler(void *arg, void *p_response)
     iotx_coap_resp_code_t resp_code;
     IOT_CoAP_GetMessageCode(p_response, &resp_code);
     IOT_CoAP_GetMessagePayload(p_response, &p_payload, &len);
-    OTA_LOG_DEBUG("CoAP response code = %d", resp_code);
-    OTA_LOG_DEBUG("[CoAP msg_len=%d, msg=%s\r\n", len, p_payload);
+    MOLMC_LOGD("ota", "CoAP response code = %d", resp_code);
+    MOLMC_LOGD("ota", "[CoAP msg_len=%d, msg=%s\r\n", len, p_payload);
 
     if ((NULL != h_osc_coap) && (NULL != p_payload)) {
         h_osc_coap->cb(h_osc_coap->context, (const char *)p_payload, (uint32_t)len);
@@ -73,7 +73,7 @@ static int otacoap_GenTopicName(char *buf, size_t buf_len, const char *ota_topic
     OTA_ASSERT(ret < buf_len);
 
     if (ret < 0) {
-        OTA_LOG_ERROR("snprintf failed");
+        MOLMC_LOGE("ota", "snprintf failed");
         return -1;
     }
 
@@ -95,13 +95,13 @@ static int otacoap_Publish(otacoap_Struct_pt handle, const char *topic_type, con
     /* topic name: /topic/ota/device/${topic_type}/${productKey}/${deviceName} */
     ret = otacoap_GenTopicName(uri, OSC_COAP_URI_MAX_LEN, topic_type, handle->product_key, handle->device_name);
     if (ret < 0) {
-       OTA_LOG_ERROR("generate topic name failed");
+       MOLMC_LOGE("ota", "generate topic name failed");
        return -1;
     }
 
     if (IOTX_SUCCESS != (ret = IOT_CoAP_SendMessage(handle->coap, (char *)uri, &message)))
     {
-        OTA_LOG_ERROR("send CoAP msg failed%d", ret);
+        MOLMC_LOGE("ota", "send CoAP msg failed%d", ret);
         return -1;
     }
 
@@ -113,8 +113,8 @@ void *osc_Init(const char *product_key, const char *device_name, void *ch_signal
 {
     otacoap_Struct_pt h_osc = NULL;
 
-    if (NULL == (h_osc = OTA_MALLOC(sizeof(otacoap_Struct_t)))) {
-        OTA_LOG_ERROR("allocate for h_osc failed");
+    if (NULL == (h_osc = HAL_Malloc(sizeof(otacoap_Struct_t)))) {
+        MOLMC_LOGE("ota", "allocate for h_osc failed");
         return NULL;
     }
 
@@ -135,7 +135,7 @@ void *osc_Init(const char *product_key, const char *device_name, void *ch_signal
 int osc_Deinit(void *handle)
 {
     if (NULL != handle) {
-        OTA_FREE(handle);
+        HAL_Free(handle);
     }
 
     return 0;

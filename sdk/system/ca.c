@@ -16,7 +16,6 @@
  *
  */
 
-
 #include <stdlib.h>
 
 #ifndef IOTX_WITHOUT_TLS

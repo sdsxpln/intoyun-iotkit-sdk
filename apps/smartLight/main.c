@@ -37,13 +37,13 @@ void eventProcess(event_type_t event, uint8_t *data, uint32_t len)
             //光照强度
             if (RESULT_DATAPOINT_NEW == Cloud.readDatapointNumberDouble(DPID_NUMBER_ILLUMINATION, &dpDoubleIllumination)) {
                 //用户代码
-                log_info("dpDoubleIllumination = %f\r\n", dpDoubleIllumination);
+                MOLMC_LOGI("smartLight", "dpDoubleIllumination = %f\r\n", dpDoubleIllumination);
             }
 
             //洒水器开关
             if (RESULT_DATAPOINT_NEW == Cloud.readDatapointBool(DPID_BOOL_SPRINKLER_SWITCH, &dpBoolSprinkler_switch)) {
                 //用户代码
-                log_info("dpBoolSprinkler_switch = %d\r\n", dpBoolSprinkler_switch);
+                MOLMC_LOGI("smartLight", "dpBoolSprinkler_switch = %d\r\n", dpBoolSprinkler_switch);
             }
             break;
 
@@ -63,9 +63,6 @@ void eventProcess(event_type_t event, uint8_t *data, uint32_t len)
 
 void userInit(void)
 {
-    IOT_OpenLog("mqtt");
-    IOT_SetLogLevel(IOT_LOG_DEBUG);
-
     //初始设备信息
     System.init();
     System.setDeviceInfo(DEVICE_ID_DEF, DEVICE_SECRET_DEF, PRODUCT_ID_DEF, PRODUCT_SECRET_DEF, HARDWARE_VERSION_DEF, SOFTWARE_VERSION_DEF, COMM_TYPE_WIFI);

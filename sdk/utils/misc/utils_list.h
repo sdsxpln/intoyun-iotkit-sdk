@@ -16,7 +16,6 @@
  *
  */
 
-
 #ifndef _IOTX_COMMON_LIST_H
 #define _IOTX_COMMON_LIST_H
 

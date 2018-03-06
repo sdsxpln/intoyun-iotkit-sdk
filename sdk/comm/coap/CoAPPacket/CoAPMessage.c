@@ -288,26 +288,26 @@ int CoAPMessage_send(CoAPContext *context, CoAPMessage *message)
     /* TODO: get the message length */
     msglen = CoAPSerialize_MessageLength(message);
     if (COAP_MSG_MAX_PDU_LEN < msglen) {
-        COAP_INFO("The message length %d is too loog", msglen);
+        MOLMC_LOGI("coap", "The message length %d is too loog", msglen);
         return COAP_ERROR_DATA_SIZE;
     }
 
     memset(context->sendbuf, 0x00, COAP_MSG_MAX_PDU_LEN);
     msglen = CoAPSerialize_Message(message, context->sendbuf, COAP_MSG_MAX_PDU_LEN);
-    COAP_DEBUG("----The message length %d-----", msglen);
+    MOLMC_LOGD("coap", "----The message length %d-----", msglen);
 
 
     ret = CoAPNetwork_write(&context->network, context->sendbuf, (unsigned int)msglen);
     if (COAP_SUCCESS == ret) {
         if (CoAPReqMsg(message->header) || CoAPCONRespMsg(message->header)) {
-            COAP_DEBUG("Add message id %d len %d to the list",
+            MOLMC_LOGD("coap", "Add message id %d len %d to the list",
                        message->header.msgid, msglen);
             CoAPMessageList_add(context, message, msglen);
         } else {
-            COAP_DEBUG("The message doesn't need to be retransmitted");
+            MOLMC_LOGD("coap", "The message doesn't need to be retransmitted");
         }
     } else {
-        COAP_ERR("CoAP transoprt write failed, return %d", ret);
+        MOLMC_LOGE("coap", "CoAP transoprt write failed, return %d", ret);
     }
 
     return ret;
@@ -349,7 +349,7 @@ static int CoAPRespMessage_handle(CoAPContext *context, CoAPMessage *message)
         if (0 != node->tokenlen && node->tokenlen == message->header.tokenlen
             && 0 == memcmp(node->token, message->token, message->header.tokenlen)) {
 
-            COAP_DEBUG("Find the node by token");
+            MOLMC_LOGD("coap", "Find the node by token");
             message->user  = node->user;
             if (COAP_MSG_CODE_400_BAD_REQUEST <= message->header.code) {
                 /* TODO:i */
@@ -361,7 +361,7 @@ static int CoAPRespMessage_handle(CoAPContext *context, CoAPMessage *message)
             if (NULL != node->handler) {
                 node->handler(node->user, message);
             }
-            COAP_DEBUG("Remove the message id %d from list", node->msgid);
+            MOLMC_LOGD("coap", "Remove the message id %d from list", node->msgid);
             list_del_init(&node->sendlist);
             context->list.count--;
             if (NULL != node->message) {
@@ -385,12 +385,12 @@ static void CoAPMessage_handle(CoAPContext *context,
 
     ret = CoAPDeserialize_Message(&message, buf, datalen);
     if (NULL != message.payload) {
-        COAP_DEBUG("-----payload: %s---", message.payload);
+        MOLMC_LOGD("coap", "-----payload: %s---", message.payload);
     }
-    COAP_DEBUG("-----code   : 0x%x---", message.header.code);
-    COAP_DEBUG("-----type   : 0x%x---", message.header.type);
-    COAP_DEBUG("-----msgid  : %d---", message.header.msgid);
-    COAP_DEBUG("-----opt    : %d---", message.optnum);
+    MOLMC_LOGD("coap", "-----code   : 0x%x---", message.header.code);
+    MOLMC_LOGD("coap", "-----type   : 0x%x---", message.header.type);
+    MOLMC_LOGD("coap", "-----msgid  : %d---", message.header.msgid);
+    MOLMC_LOGD("coap", "-----opt    : %d---", message.optnum);
 
     if (COAP_SUCCESS != ret) {
         if (NULL != context->notifier) {
@@ -400,11 +400,11 @@ static void CoAPMessage_handle(CoAPContext *context,
     }
 
     if (COAPAckMsg(message.header)) {
-        COAP_DEBUG("Receive CoAP ACK Message,ID %d", message.header.msgid);
+        MOLMC_LOGD("coap", "Receive CoAP ACK Message,ID %d", message.header.msgid);
         CoAPAckMessage_handle(context, &message);
 
     } else if (CoAPRespMsg(message.header)) {
-        COAP_DEBUG("Receive CoAP Response Message,ID %d", message.header.msgid);
+        MOLMC_LOGD("coap", "Receive CoAP Response Message,ID %d", message.header.msgid);
         CoAPRespMessage_handle(context, &message);
     }
 }
@@ -447,7 +447,7 @@ int CoAPMessage_cycle(CoAPContext *context)
                     node->timeout     = node->timeout_val * 2;
                     node->timeout_val = node->timeout;
                     node->retrans_count++;
-                    COAP_DEBUG("Retansmit the message id %d len %d", node->msgid, node->msglen);
+                    MOLMC_LOGD("coap", "Retansmit the message id %d len %d", node->msgid, node->msglen);
                     ret = CoAPNetwork_write(&context->network, node->message, node->msglen);
                     if (ret != COAP_SUCCESS) {
                         if (NULL != context->notifier) {
@@ -467,7 +467,7 @@ int CoAPMessage_cycle(CoAPContext *context)
                     /*Remove the node from the list*/
                     list_del_init(&node->sendlist);
                     context->list.count--;
-                    COAP_INFO("Retransmit timeout,remove the message id %d count %d",
+                    MOLMC_LOGI("coap", "Retransmit timeout,remove the message id %d count %d",
                               node->msgid, context->list.count);
                     coap_free(node->message);
                     coap_free(node);

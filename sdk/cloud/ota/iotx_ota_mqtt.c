@@ -16,7 +16,6 @@
  *
  */
 
-
 #ifndef __OTA_MQTT_C_H__
 #define __OTA_MQTT_C_H__
 
@@ -57,7 +56,7 @@ static int otamqtt_GenTopicName(char *buf, size_t buf_len, const char *ota_topic
     OTA_ASSERT(ret < buf_len);
 
     if (ret < 0) {
-        OTA_LOG_ERROR("HAL_Snprintf failed");
+        MOLMC_LOGE("ota", "HAL_Snprintf failed");
         return -1;
     }
 
@@ -84,13 +83,13 @@ static int otamqtt_Publish(otamqtt_Struct_pt handle, const char *topic_type, int
     /* inform OTA to topic: "/ota/device/progress/$(product_key)/$(device_name)" */
     ret = otamqtt_GenTopicName(topic_name, OTA_MQTT_TOPIC_LEN, topic_type, handle->product_key, handle->device_name);
     if (ret < 0) {
-       OTA_LOG_ERROR("generate topic name of info failed");
+       MOLMC_LOGE("ota", "generate topic name of info failed");
        return -1;
     }
 
     ret = IOT_MQTT_Publish(handle->mqtt, topic_name, &topic_info);
     if (ret < 0) {
-        OTA_LOG_ERROR("publish failed");
+        MOLMC_LOGE("ota", "publish failed");
         return IOT_OTAE_OSC_FAILED;
     }
 
@@ -105,8 +104,8 @@ static void otamqtt_UpgrageCb(void *pcontext, void *pclient, iotx_mqtt_event_msg
     otamqtt_Struct_pt handle = (otamqtt_Struct_pt) pcontext;
     iotx_mqtt_topic_info_pt topic_info = (iotx_mqtt_topic_info_pt)msg->msg;
 
-    OTA_LOG_DEBUG("topic=%.*s", topic_info->topic_len, topic_info->ptopic);
-    OTA_LOG_DEBUG("len=%u, topic_msg=%.*s", topic_info->payload_len, topic_info->payload_len, (char *)topic_info->payload);
+    MOLMC_LOGD("ota", "topic=%.*s", topic_info->topic_len, topic_info->ptopic);
+    MOLMC_LOGD("ota", "len=%u, topic_msg=%.*s", topic_info->payload_len, topic_info->payload_len, (char *)topic_info->payload);
 
     OTA_ASSERT(IOTX_MQTT_EVENT_PUBLISH_RECVEIVED == msg->event_type);
 
@@ -121,8 +120,8 @@ void *osc_Init(const char *product_key, const char *device_name, void *ch_signal
     int ret;
     otamqtt_Struct_pt h_osc = NULL;
 
-    if (NULL == (h_osc = OTA_MALLOC(sizeof(otamqtt_Struct_t)))) {
-        OTA_LOG_ERROR("allocate for h_osc failed");
+    if (NULL == (h_osc = HAL_Malloc(sizeof(otamqtt_Struct_t)))) {
+        MOLMC_LOGE("ota", "allocate for h_osc failed");
         return NULL;
     }
 
@@ -131,13 +130,13 @@ void *osc_Init(const char *product_key, const char *device_name, void *ch_signal
     /* subscribe the OTA topic: "/ota/device/upgrade/$(product_key)/$(device_name)" */
     ret = otamqtt_GenTopicName(h_osc->topic_upgrade, OTA_MQTT_TOPIC_LEN, "upgrade", product_key, device_name);
     if (ret < 0) {
-        OTA_LOG_ERROR("generate topic name of upgrade failed");
+        MOLMC_LOGE("ota", "generate topic name of upgrade failed");
         goto do_exit;
     }
 
     ret = IOT_MQTT_Subscribe(ch_signal, h_osc->topic_upgrade, IOTX_MQTT_QOS1, otamqtt_UpgrageCb, h_osc);
     if (ret < 0) {
-        OTA_LOG_ERROR("mqtt subscribe failed");
+        MOLMC_LOGE("ota", "mqtt subscribe failed");
         goto do_exit;
     }
 
@@ -151,7 +150,7 @@ void *osc_Init(const char *product_key, const char *device_name, void *ch_signal
 
 do_exit:
     if (NULL != h_osc) {
-         OTA_FREE(h_osc);
+         HAL_Free(h_osc);
     }
 
     return NULL;
@@ -161,7 +160,7 @@ do_exit:
 int osc_Deinit(void *handle)
 {
     if (NULL != handle) {
-        OTA_FREE(handle);
+        HAL_Free(handle);
     }
 
     return 0;
